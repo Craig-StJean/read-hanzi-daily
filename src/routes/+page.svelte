@@ -1,33 +1,36 @@
-<script>
+<script lang="ts">
   import Greet from "$lib/Greet.svelte";
+  import { AppBar } from '@skeletonlabs/skeleton';
+  import { LightSwitch } from '@skeletonlabs/skeleton';
+  import { FileDropzone } from '@skeletonlabs/skeleton';
+  
+  let files: FileList;
 </script>
 
-<h1>Welcome to Tauri!</h1>
+<AppBar>
+	<svelte:fragment slot="lead"><h3>AUTO SUBTITLE</h3></svelte:fragment>
+	(center)
+	<svelte:fragment slot="trail"><LightSwitch /></svelte:fragment>
+</AppBar>
 
-<div class="row">
-  <a href="https://vitejs.dev" target="_blank">
-    <img src="/vite.svg" class="logo vite" alt="Vite Logo" />
-  </a>
-  <a href="https://tauri.app" target="_blank">
-    <img src="/tauri.svg" class="logo tauri" alt="Tauri Logo" />
-  </a>
-  <a href="https://kit.svelte.dev" target="_blank">
-    <img src="/svelte.svg" class="logo svelte" alt="Svelte Logo" />
-  </a>
+<div class="container mx-auto">
+	<h1>Welcome to Tauri!</h1>
+
+	<div class="row">
+	<FileDropzone title="Drop video/audio files here or click to select" bind:files />
+	</div>
+
+	<p>Click on the Tauri, Vite, and Svelte logos to learn more.</p>
+
+	<div class="row">
+	<Greet />
+	</div>
 </div>
 
-<p>Click on the Tauri, Vite, and Svelte logos to learn more.</p>
-
-<div class="row">
-  <Greet />
-</div>
 
 <style>
-  .logo.vite:hover {
-    filter: drop-shadow(0 0 2em #747bff);
-  }
-
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00);
-  }
+	div.mx-auto {
+		margin-left: auto;
+		margin-right: auto;
+	}
 </style>
