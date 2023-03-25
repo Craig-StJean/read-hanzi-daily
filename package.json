@@ -1,5 +1,5 @@
 {
-  "name": "auto-subtitle-gui",
+  "name": "read-handzi-daily",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,10 +17,10 @@
   "devDependencies": {
     "@skeletonlabs/skeleton": "^0.86.9",
     "@sveltejs/adapter-static": "next",
-    "@sveltejs/kit": "next",
+    "@sveltejs/kit": "^1.14.0",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.8",
-    "@tauri-apps/cli": "^1.2.2",
+    "@tauri-apps/cli": "^1.2.3",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
     "postcss-load-config": "^4.0.1",
