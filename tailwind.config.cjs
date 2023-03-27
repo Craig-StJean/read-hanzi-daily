@@ -10,9 +10,9 @@ const config = {
   },
 
   plugins: [
-	require('@skeletonlabs/skeleton/tailwind/theme.cjs'),
 	require('@tailwindcss/forms'),
 	require('@tailwindcss/typography'),
+	...require('@skeletonlabs/skeleton/tailwind/skeleton.cjs')(),
 ],
   
   darkMode: 'class',
