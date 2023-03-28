@@ -9,7 +9,7 @@
 	import ChineseSelector from '$lib/MediaSelector/ChineseSelector.svelte';
 	import MediaSelector from '$lib/MediaSelector/MediaSelector.svelte';
 	import YearMonthSelector from '$lib/MediaSelector/YearMonthSelector.svelte';
-	import { getNewEpub } from '$lib/jwDownloader';
+	import { getNewEpub } from '$lib/MediaSelector/jwDownloader';
 	
 	let script: string;
 	let media: string;
