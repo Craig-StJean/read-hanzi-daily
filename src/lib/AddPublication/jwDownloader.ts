@@ -6,21 +6,49 @@ import { Command } from '@tauri-apps/api/shell';
 
 const epubsFolder = 'epubs';
 
-export async function getNewEpub(publication: string, issue: string, language: string, completedCallback: (success: boolean) => any) {
+export type DownloadCallbackResult = {
+	stage: string;
+	success: boolean;
+	percentage: number;
+};
+
+export async function getNewEpub(publication: string, issue: string, language: string, downloadCallback: (result: DownloadCallbackResult) => any) {
 	try {
+		downloadCallback({
+			stage: 'Querying JW.org for a download link...',
+			success: false,
+			percentage: 0,
+		});
 		const url = await getDownloadUrl(publication, issue, language, 'EPUB');
 		const fileName = url.slice(url.lastIndexOf('/') + 1);
 		
+		downloadCallback({
+			stage: 'Downloading...',
+			success: false,
+			percentage: 0,
+		});
 		await createDir(epubsFolder, { dir: BaseDirectory.AppData, recursive: true });
+		await downloadFile(url, epubsFolder, downloadCallback);
 		
-		await downloadFile(url, epubsFolder);
-		
+		downloadCallback({
+			stage: 'Extracting...',
+			success: false,
+			percentage: 0,
+		});
 		await unzipEpub(fileName);
 		
-		completedCallback(true);
+		downloadCallback({
+			stage: 'Finished',
+			success: true,
+			percentage: 100,
+		});
 	}
 	catch (error) {
-		completedCallback(false);
+		downloadCallback({
+			stage: 'Finished',
+			success: false,
+			percentage: 0,
+		});
 		console.log(error);
 	}
 }
@@ -43,7 +71,7 @@ export async function getDownloadUrl(publication: string, issue: string, languag
 	return url;
 }
 
-export async function downloadFile(url: string, downloadFolder: string) {
+export async function downloadFile(url: string, downloadFolder: string, downloadCallback: (result: DownloadCallbackResult) => any) {
 	const fileName = url.slice(url.lastIndexOf('/') + 1);
 	const fetchOptions = {
 		method: 'GET' as HttpVerb,

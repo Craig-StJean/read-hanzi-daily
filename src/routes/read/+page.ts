@@ -1,51 +1,65 @@
 import type { PageLoad } from './$types';
 
 import { appDataDir, sep } from '@tauri-apps/api/path';
-import { readDir, BaseDirectory } from '@tauri-apps/api/fs';
+import { readDir, readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
 import type { FileEntry } from '@tauri-apps/api/fs';
 
-import { MONTH_NAMES } from '$lib/data/Constants';
+import { readingHistory } from '$lib/data/AppSaveData';
 
-type PubData = {
-	publication: string;
-	script: string;
-	year: number;
-	month: string;
-	path: string;
-}
+import { goto } from '$app/navigation';
 
 export const load = (async ({ params }) => {
-	
-	const appDataDirPath = await appDataDir();
-	
-	const entries: FileEntry[] = await readDir('epubs', { dir: BaseDirectory.AppData, recursive: true });
-	
-	let data: PubData[] = [];
-	
-	for (const entry of entries) {
-		const fileName = entry.path.slice(entry.path.lastIndexOf(sep) + 1);
-		if (fileName.includes('.')) {
-			continue;
-		}
+	let latestRead: string;
+	readingHistory.subscribe(v => {
+		latestRead = v.latestRead();
+	})
+	if (latestRead === undefined) {
+		// if there's no read history it sends you back to the library
+		goto('/library');
+	} else {
+		const appDataDirPath: string = await appDataDir();
+		const directory: string = appDataDirPath + latestRead + sep + 'OEBPS' + sep;
 		
-		const splitfolderName = fileName.split('_');
-		let pubData: PubData;
-		console.log(BaseDirectory.AppData)
-		if (splitfolderName[0] == 'w') {
-			pubData = {
-				publication: 'Watchtower',
-				script: splitfolderName[1],
-				year: Number(splitfolderName[2].slice(0, 4)),
-				month: MONTH_NAMES[Number(splitfolderName[2].slice(4, 6)) - 1],
-				path: entry.path.replace(appDataDirPath, ''),
-			};
-			data.push(pubData);
-		} else if (splitfolderName[0] == 'SOMETHING_ELSE') {
-			// TODO handle other publications
+		const entries: FileEntry[] = await readDir(directory);
+		
+		const parser = new DOMParser();
+		
+		let articleFileNames: string[] = [];
+		for (const entry of entries) {
+			const fileName: string = entry.path.slice(entry.path.lastIndexOf(sep) + 1);
+			if (fileName == 'content.opf') {
+				const contentText = await readTextFile(directory + fileName);
+				const contentXML = parser.parseFromString(contentText, 'text/xml');
+				
+				
+				for (let chapterNumber = 1; chapterNumber < 1000; chapterNumber++) {
+					const itemElement = contentXML.getElementById('chapter' + chapterNumber);
+					
+					if (itemElement === null) {
+						break;
+					}
+					
+					if (itemElement.getAttribute('href') === null) {
+						continue;
+					}
+					
+					const href = itemElement.getAttribute('href') as string;
+					
+					if (href.includes('pagenav') || href.includes('-extracted')) {
+						continue;
+					}
+					
+					articleFileNames.push(href);
+				}
+				break;
+			}
 		}
+		console.log(articleFileNames);
+		
+		return {
+			html: ''
+		};
 	}
-	console.log(data);
-	return {
-		pubData: data
-	};
+	
+	
 }) satisfies PageLoad;

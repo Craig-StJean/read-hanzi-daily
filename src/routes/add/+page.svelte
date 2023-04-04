@@ -6,33 +6,43 @@
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	
-	import ChineseSelector from '$lib/MediaSelector/ChineseSelector.svelte';
-	import MediaSelector from '$lib/MediaSelector/MediaSelector.svelte';
-	import YearMonthSelector from '$lib/MediaSelector/YearMonthSelector.svelte';
-	import { getNewEpub } from '$lib/MediaSelector/jwDownloader';
+	import ChineseSelector from '$lib/AddPublication/ChineseSelector.svelte';
+	import PublicationSelector from '$lib/AddPublication/PublicationSelector.svelte';
+	import BookSelector from '$lib/AddPublication/BookSelector.svelte';
+	import YearMonthSelector from '$lib/AddPublication/YearMonthSelector.svelte';
+	import { getNewEpub } from '$lib/AddPublication/jwDownloader';
+	import type { DownloadCallbackResult } from '$lib/AddPublication/jwDownloader';
 	
 	let script: string;
-	let media: string;
+	let publication: string;
+	let book: string;
 	let year: number;
 	let month: number;
 	
 	let downloading: boolean = false;
-	function downloadCallback(success: boolean): void {
-		downloading = false;
+	let downloadingMessage: string = '';
+	function downloadCallback(result: DownloadCallbackResult): void {
 		
-		let t: ToastSettings;
-		if (success) {
-			t = {
-				message: 'Successfully downloaded 🥳🎉',
-				background: 'variant-filled-primary',
-			};
+		if (result.stage == 'Finished') {
+			downloading = false;
+			downloadingMessage = '';
+			let t: ToastSettings;
+			if (result.success) {
+				t = {
+					message: 'Successfully downloaded 🥳🎉',
+					background: 'variant-filled-primary',
+				};
+			} else {
+				t = {
+					message: 'There was an error downloading 😭',
+					background: 'variant-filled-error',
+				};
+			}
+			toastStore.trigger(t);
 		} else {
-			t = {
-				message: 'There was an error downloading 😭',
-				background: 'variant-filled-error',
-			};
+			downloadingMessage = result.stage;
 		}
-		toastStore.trigger(t);
+		
 	}
 	
 	let tabSet: number = 0;
@@ -47,7 +57,10 @@
 		let date: string = '';
 		let lang: string = (script == 'simplified') ? 'CHS' : 'CH';
 		
-		if (media == 'watchtower') {
+		if (publication == 'books') {
+			pub = book;
+			date = '';
+		} else if (publication == 'watchtower') {
 			pub = 'w';
 			date = year + String(month + 1).padStart(2, '0');
 		}
@@ -86,13 +99,23 @@
 						<svelte:fragment slot="header">Select Chinese Script</svelte:fragment>
 						<ChineseSelector bind:script />
 					</Step>
-					<Step>
+					<Step locked={downloading}>
 						<svelte:fragment slot="header">Select Publication</svelte:fragment>
-						<MediaSelector bind:media />
+						<PublicationSelector bind:publication />
 					</Step>
 					<Step locked={downloading}>
-						<svelte:fragment slot="header">Select Publication Date</svelte:fragment>
-						<YearMonthSelector bind:year bind:month />
+						<svelte:fragment slot="header">
+							{#if publication == 'books'}
+								Select Book
+							{:else if publication == 'watchtower'}
+								Select Publication Date
+							{/if}
+						</svelte:fragment>
+						{#if publication == 'books'}
+							<BookSelector bind:book />
+						{:else if publication == 'watchtower'}
+							<YearMonthSelector bind:year bind:month />
+						{/if}
 					</Step>
 				</Stepper>
 			{:else if tabSet === 1}
@@ -114,7 +137,10 @@
 	
 	{#if downloading}
 		<div class="fixed inset-0 flex justify-center items-center h-screen variant-glass-surface">
-			<ProgressRadial stroke={100} meter="stroke-primary-500" track="stroke-primary-500/30" />
+			<div>
+				<h3 class="text-center m-5">{downloadingMessage}</h3>
+				<ProgressRadial stroke={100} meter="stroke-primary-500" track="stroke-primary-500/30" class="mx-auto" />
+			</div>
 		</div>
 	{/if}
 </div>
