@@ -14,7 +14,7 @@
 				<rt>simplified</rt>
 			</ruby>
 		</RadioItem>
-		<RadioItem bind:group={script} name="justify" value="traditional" class="text-4xl font-light">
+		<RadioItem bind:group={script} name="justify" value="traditional" class="font-light">
 			<ruby>
 				<ruby>
 					繁<rt>fán</rt>體<rt>tǐ</rt>
@@ -24,3 +24,10 @@
 		</RadioItem>
 	</RadioGroup>
 </div>
+
+<style>
+	RadioItem, ruby {
+		font-size: 1.5rem;
+		line-height: 2rem;
+	}
+</style>
