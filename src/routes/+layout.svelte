@@ -3,7 +3,7 @@
 	import '@skeletonlabs/skeleton/styles/all.css';
 	import "../app.postcss";
 	
-	import { AppShell, AppBar, LightSwitch, Drawer, drawerStore } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, LightSwitch, Drawer, drawerStore, type DrawerSettings } from '@skeletonlabs/skeleton';
 	import { Toast } from '@skeletonlabs/skeleton';
 	
 	import Navigation from '$lib/Navigation/Navigation.svelte';
@@ -11,14 +11,20 @@
 	function drawerOpen(): void {
 		drawerStore.open({});
 	}
+	
+	function drawerClose(): void {
+		console.log('close')
+		drawerStore.close();
+		
+	}
 </script>
 
 <Toast />
 
-<Drawer>
-	<h2 class="p-4">Navigation</h2>
-	<hr />
-	<Navigation />
+<Drawer class='w-[70px] justify-center overflow-x-hidden'>
+	<div class='flex h-max justify-center overflow-x-hidden' on:click={drawerClose}>
+		<Navigation />
+	</div>
 </Drawer>
 
 <AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
