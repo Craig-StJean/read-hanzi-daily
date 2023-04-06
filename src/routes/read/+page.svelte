@@ -1,7 +1,7 @@
-<script>
-	/** @type {import('./$types').PageData} */
+<script lang="ts">
+	import type { PageData } from './$types';
+	
 	export let data;
 </script>
 
-<h1>{data.title}</h1>
-<div>{@html data.content}</div>
+<article class="prose prose-xl dark:prose-invert">{@html data.bodyInnerHtml}</article>

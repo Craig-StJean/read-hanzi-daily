@@ -1,6 +1,6 @@
 import type { BinaryFileContents } from '@tauri-apps/api/fs';
 import { fetch, ResponseType, type HttpVerb } from '@tauri-apps/api/http';
-import { createDir, readBinaryFile, writeBinaryFile, BaseDirectory } from '@tauri-apps/api/fs';
+import { createDir, writeBinaryFile, BaseDirectory } from '@tauri-apps/api/fs';
 import { appDataDir, sep } from '@tauri-apps/api/path';
 import { Command } from '@tauri-apps/api/shell';
 

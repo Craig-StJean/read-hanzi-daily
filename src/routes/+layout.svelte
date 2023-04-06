@@ -13,9 +13,7 @@
 	}
 	
 	function drawerClose(): void {
-		console.log('close')
 		drawerStore.close();
-		
 	}
 </script>
 

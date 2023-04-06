@@ -13,6 +13,10 @@
   "tauri": {
     "allowlist": {
       "all": false,
+	  "protocol": {
+		"asset": true,
+		"assetScope": ["$APPDATA/**"]
+	  },
 	  "path": {
 		"all": true
 	  },
@@ -110,7 +114,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false

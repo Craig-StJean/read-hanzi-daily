@@ -1,12 +1,12 @@
 import type { PageLoad } from './$types';
+import { goto } from '$app/navigation';
 
-import { appDataDir, sep } from '@tauri-apps/api/path';
-import { readDir, readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
-import type { FileEntry } from '@tauri-apps/api/fs';
+import { readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
+import { appDataDir } from '@tauri-apps/api/path';
+import { sep } from '@tauri-apps/api/path';
 
 import { readingHistory } from '$lib/data/AppSaveData';
-
-import { goto } from '$app/navigation';
+import HtmlAdjuster from './HtmlAdjuster';
 
 export const load = (async ({ params }) => {
 	let latestRead: string;
@@ -17,47 +17,18 @@ export const load = (async ({ params }) => {
 		// if there's no read history it sends you back to the library
 		goto('/library');
 	} else {
-		const appDataDirPath: string = await appDataDir();
-		const directory: string = appDataDirPath + latestRead + sep + 'OEBPS' + sep;
-		
-		const entries: FileEntry[] = await readDir(directory);
-		
+		const htmlText = await readTextFile(latestRead, { dir: BaseDirectory.AppData });
 		const parser = new DOMParser();
+		const html = parser.parseFromString(htmlText, 'text/html');
 		
-		let articleFileNames: string[] = [];
-		for (const entry of entries) {
-			const fileName: string = entry.path.slice(entry.path.lastIndexOf(sep) + 1);
-			if (fileName == 'content.opf') {
-				const contentText = await readTextFile(directory + fileName);
-				const contentXML = parser.parseFromString(contentText, 'text/xml');
-				
-				
-				for (let chapterNumber = 1; chapterNumber < 1000; chapterNumber++) {
-					const itemElement = contentXML.getElementById('chapter' + chapterNumber);
-					
-					if (itemElement === null) {
-						break;
-					}
-					
-					if (itemElement.getAttribute('href') === null) {
-						continue;
-					}
-					
-					const href = itemElement.getAttribute('href') as string;
-					
-					if (href.includes('pagenav') || href.includes('-extracted')) {
-						continue;
-					}
-					
-					articleFileNames.push(href);
-				}
-				break;
-			}
-		}
-		console.log(articleFileNames);
+		const appDataDirPath = await appDataDir();
+		const pathToFileFolder = appDataDirPath + latestRead.slice(0, latestRead.lastIndexOf(sep) + 1);
+		let htmlAdjuster = new HtmlAdjuster(html, pathToFileFolder);
+		
+		console.log({pathToFileFolder, html, newHtml: htmlAdjuster.html})
 		
 		return {
-			html: ''
+			bodyInnerHtml: htmlAdjuster.html.body.innerHTML,
 		};
 	}
 	

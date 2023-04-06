@@ -1,8 +1,11 @@
 <script lang="ts">
+	import type { PageData } from './$types';
+	import { goto } from '$app/navigation';
+	
 	import { FileDropzone } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
-	import { Toast, toastStore } from '@skeletonlabs/skeleton';
+	import { toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	
@@ -12,6 +15,9 @@
 	import YearMonthSelector from '$lib/AddPublication/YearMonthSelector.svelte';
 	import { getNewEpub } from '$lib/AddPublication/jwDownloader';
 	import type { DownloadCallbackResult } from '$lib/AddPublication/jwDownloader';
+  import { sep } from '@tauri-apps/api/path';
+	
+	export let data: PageData;
 	
 	let script: string;
 	let publication: string;
@@ -55,7 +61,6 @@
 	function onCompleteHandler(): void {
 		let pub: string = '';
 		let date: string = '';
-		let lang: string = (script == 'simplified') ? 'CHS' : 'CH';
 		
 		if (publication == 'books') {
 			pub = book;
@@ -65,11 +70,21 @@
 			date = year + String(month + 1).padStart(2, '0');
 		}
 		
-		getNewEpub(pub, date, lang, downloadCallback);
-		downloading = true;
+		const index = data.myPublicationsInfo.findIndex(pubInfo => pubInfo.script == script && pubInfo.code == pub && pubInfo.year + pubInfo.month == date);
+		if (index == -1) {
+			// download pub
+			getNewEpub(pub, date, script, downloadCallback);
+			downloading = true;
+		} else {
+			// already have pub, therefore open table of contents
+			const folderPath = data.myPublicationsInfo[index].path;
+			const folderName = folderPath.slice(folderPath.lastIndexOf(sep) + 1);
+			
+			goto(`/library/${folderName}`);
+		}
 	}
 	
-	
+	$: myBookCodes = data.myPublicationsInfo.filter(pubInfo => pubInfo.year == '' && pubInfo.script == script).map(bookInfo => bookInfo.code);
 </script>
 
 <div class="container mx-auto space-y-5">
@@ -112,7 +127,7 @@
 							{/if}
 						</svelte:fragment>
 						{#if publication == 'books'}
-							<BookSelector bind:book />
+							<BookSelector bind:book {myBookCodes} />
 						{:else if publication == 'watchtower'}
 							<YearMonthSelector bind:year bind:month />
 						{/if}
