@@ -6,7 +6,45 @@ const config = {
 ],
 
   theme: {
-    extend: {},
+    extend: {
+		typography: {
+			DEFAULT: {
+				css: {
+					':is(p, h1, h2, h3, h4, h5, h6):has(ruby)': {
+						lineHeight: 2.5,
+					}
+				}
+			},
+			sm: {
+				css: {
+					':is(h1, h2, h3, h4, h5, h6):has(ruby)': {
+						lineHeight: 2.5,
+					}
+				}
+			},
+			lg: {
+				css: {
+					':is(h1, h2, h3, h4, h5, h6):has(ruby)': {
+						lineHeight: 2.5,
+					}
+				}
+			},
+			xl: {
+				css: {
+					':is(h1, h2, h3, h4, h5, h6):has(ruby)': {
+						lineHeight: 2.5,
+					}
+				}
+			},
+			'2xl': {
+				css: {
+					':is(h1, h2, h3, h4, h5, h6):has(ruby)': {
+						lineHeight: 2.5,
+					}
+				}
+			}
+		}
+	},
   },
 
   plugins: [

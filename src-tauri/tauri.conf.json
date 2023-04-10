@@ -25,6 +25,7 @@
 		"writeFile": true,
 		"readDir": true,
 		"createDir": true,
+		"exists": true,
 		"scope": ["$APPDATA/**"]
 	  },
 	  "http": {

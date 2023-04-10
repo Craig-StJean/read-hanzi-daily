@@ -15,7 +15,7 @@
 	import YearMonthSelector from '$lib/AddPublication/YearMonthSelector.svelte';
 	import { getNewEpub } from '$lib/AddPublication/jwDownloader';
 	import type { DownloadCallbackResult } from '$lib/AddPublication/jwDownloader';
-  import { sep } from '@tauri-apps/api/path';
+	import { sep } from '@tauri-apps/api/path';
 	
 	export let data: PageData;
 	

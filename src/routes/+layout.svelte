@@ -7,6 +7,9 @@
 	import { Toast } from '@skeletonlabs/skeleton';
 	
 	import Navigation from '$lib/Navigation/Navigation.svelte';
+	import { save, readingHistory } from '$lib/data/AppSaveData';
+	
+	$: save($readingHistory, 'readingHistory');
 	
 	function drawerOpen(): void {
 		drawerStore.open({});

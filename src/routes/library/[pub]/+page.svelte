@@ -10,6 +10,7 @@
 	
 	async function click(fileName: string) {
 		$readingHistory.add(data.relativeDirectory + fileName);
+		$readingHistory = $readingHistory;
 		goto(`/read`);
 	}
   </script>

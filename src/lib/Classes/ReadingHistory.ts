@@ -30,4 +30,8 @@ export default class ReadingHistory {
 	getFullHistory(): string[] {
 		return [...this.history];
 	}
+	
+	getStringifiedData(): string {
+		return JSON.stringify(this.history);
+	}
 }
