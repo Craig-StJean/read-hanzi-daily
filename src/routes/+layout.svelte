@@ -8,10 +8,13 @@
 	
 	import Navigation from '$lib/Navigation/Navigation.svelte';
 	import { save, readingHistory, knownWords, knownCharacters } from '$lib/data/AppSaveData';
+	import { publicationsInfo } from '$lib/data/Preload';
 	
 	$: save($readingHistory, 'readingHistory');
 	$: save($knownWords, 'knownWords');
 	$: save($knownCharacters, 'knownCharacters');
+	
+	const unsubscribe = publicationsInfo.subscribe(value => {});
 	
 	function drawerOpen(): void {
 		drawerStore.open({});

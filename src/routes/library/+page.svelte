@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import { sep } from '@tauri-apps/api/path';
+	
 	import { goto } from '$app/navigation';
 	
 	import { FileDropzone } from '@skeletonlabs/skeleton';
@@ -15,9 +16,8 @@
 	import YearMonthSelector from '$lib/AddPublication/YearMonthSelector.svelte';
 	import { getNewEpub } from '$lib/AddPublication/jwDownloader';
 	import type { DownloadCallbackResult } from '$lib/AddPublication/jwDownloader';
-	import { sep } from '@tauri-apps/api/path';
+	import { publicationsInfo, updatePublicationsInfo } from '$lib/data/Preload';
 	
-	export let data: PageData;
 	
 	let script: string;
 	let publication: string;
@@ -27,9 +27,13 @@
 	
 	let downloading: boolean = false;
 	let downloadingMessage: string = '';
+	
+	updatePublicationsInfo();
+	
 	function downloadCallback(result: DownloadCallbackResult): void {
 		
 		if (result.stage == 'Finished') {
+			updatePublicationsInfo();
 			downloading = false;
 			downloadingMessage = '';
 			let t: ToastSettings;
@@ -70,21 +74,21 @@
 			date = year + String(month + 1).padStart(2, '0');
 		}
 		
-		const index = data.myPublicationsInfo.findIndex(pubInfo => pubInfo.script == script && pubInfo.code == pub && pubInfo.year + pubInfo.month == date);
+		const index = $publicationsInfo.findIndex(pubInfo => pubInfo.script == script && pubInfo.code == pub && pubInfo.year + pubInfo.month == date);
 		if (index == -1) {
 			// download pub
 			getNewEpub(pub, date, script, downloadCallback);
 			downloading = true;
 		} else {
 			// already have pub, therefore open table of contents
-			const folderPath = data.myPublicationsInfo[index].path;
+			const folderPath = $publicationsInfo[index].path;
 			const folderName = folderPath.slice(folderPath.lastIndexOf(sep) + 1);
 			
 			goto(`/library/${folderName}`);
 		}
 	}
 	
-	$: myBookCodes = data.myPublicationsInfo.filter(pubInfo => pubInfo.year == '' && pubInfo.script == script).map(bookInfo => bookInfo.code);
+	$: myBookCodes = $publicationsInfo.filter(pubInfo => pubInfo.year == '' && pubInfo.script == script).map(bookInfo => bookInfo.code);
 </script>
 
 <div class="container mx-auto space-y-5">
