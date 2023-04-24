@@ -131,10 +131,10 @@ export default class HtmlAdjuster {
 	#createRuby(entry: DictionaryEntry): string {
 		let rubyPinyin = '';
 		for (let i = 0; i < entry.characters.length; i++) {
-			rubyPinyin += `<ruby class="c ${entry.characters[i]}">${entry.characters[i]}<rt>${entry.pinyin[i]}</ruby>`
+			rubyPinyin += `<ruby class="c" data-char="${entry.characters[i]}">${entry.characters[i]}<rt data-char="${entry.characters[i]}">${entry.pinyin[i]}</ruby>`
 		}
 		
-		return `<ruby class="w ${entry.word}">${rubyPinyin}<rt>${entry.definition}</ruby>`;
+		return `<ruby class="w" data-word="${entry.word}">${rubyPinyin}<rt data-word="${entry.word}">${entry.definition}</ruby>`;
 	}
 	
 	
