@@ -1,21 +1,19 @@
-import type { PageLoad } from './$types';
-import { goto } from '$app/navigation';
+import { get } from 'svelte/store';
 
 import { readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
 import { appDataDir } from '@tauri-apps/api/path';
 import { sep } from '@tauri-apps/api/path';
 
 import { readingHistory } from '$lib/data/AppSaveData';
-import HtmlAdjuster from './HtmlAdjuster';
+import HtmlAdjuster from '$lib/Read/HtmlAdjuster';
 
-export const load = (async ({ params }) => {
-	let latestRead: string = '';
-	readingHistory.subscribe(v => {
-		latestRead = v.latestRead();
-	});
+
+export async function readHtmlText(): Promise<string> {
+	const history = get(readingHistory);
+	let latestRead: string = history.latestRead();
 	if (latestRead == '') {
-		// if there's no read history it sends you back to the library
-		goto('/library');
+		// if there's no read history it should send you back to the library
+		return '';
 	} else {
 		const htmlText = await readTextFile(latestRead, { dir: BaseDirectory.AppData });
 		
@@ -23,10 +21,6 @@ export const load = (async ({ params }) => {
 		const pathToFileFolder = appDataDirPath + latestRead.slice(0, latestRead.lastIndexOf(sep) + 1);
 		let htmlAdjuster = new HtmlAdjuster(htmlText, pathToFileFolder);
 		
-		return {
-			bodyInnerHtml: htmlAdjuster.bodyInnerHtml,
-		};
+		return htmlAdjuster.bodyInnerHtml;
 	}
-	
-	
-}) satisfies PageLoad;
+}

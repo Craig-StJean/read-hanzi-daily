@@ -3,11 +3,11 @@ import type { KnownWordUnparsed } from './KnownWords';
 
 type KnownCharacter = {
 	character: string;
-	dateLearned: Date;
+	learnedDate: Date;
 }
 type KnownCharacterUnparsed = {
 	character: string;
-	dateLearned: string;
+	learnedDate: string;
 }
 
 export default class KnownCharacters extends KnownWords {
@@ -22,7 +22,7 @@ export default class KnownCharacters extends KnownWords {
 	static #knownCharacterToKnownWord(knownCharacter: KnownCharacterUnparsed): KnownWordUnparsed {
 		return {
 			word: knownCharacter.character,
-			learnedDate: knownCharacter.dateLearned,
+			learnedDate: knownCharacter.learnedDate,
 		}
 	}
 	
@@ -48,5 +48,11 @@ export default class KnownCharacters extends KnownWords {
 	
 	getAllCharacters(): string[] {
 		return super.getAllWords();
+	}
+	
+	getStringifiedData(): string {
+		let stringifiedData = super.getStringifiedData();
+		stringifiedData = stringifiedData.replaceAll('word', 'character');
+		return stringifiedData;
 	}
 }

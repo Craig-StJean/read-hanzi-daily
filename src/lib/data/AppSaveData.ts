@@ -16,6 +16,13 @@ type Stringifyable = {
 }
 
 
+const canSave = {
+	readingHistory: false,
+	knownWords: false,
+	knownCharacters: false
+};
+
+
 // Reading History
 let readingHistoryInitial = new ReadingHistory();
 if (await exists(saveDirectory + 'readingHistory.json', { dir: BaseDirectory.AppData })) {
@@ -23,6 +30,7 @@ if (await exists(saveDirectory + 'readingHistory.json', { dir: BaseDirectory.App
 	readingHistoryInitial = new ReadingHistory(JSON.parse(json));
 }
 export const readingHistory = writable(readingHistoryInitial);
+canSave.readingHistory = true;
 
 
 // Known Words
@@ -32,6 +40,7 @@ if (await exists(saveDirectory + 'knownWords.json', { dir: BaseDirectory.AppData
 	knownWordsInitial = new KnownWords(JSON.parse(json));
 }
 export const knownWords = writable(knownWordsInitial);
+canSave.knownWords = true;
 
 
 // Known Characters
@@ -41,9 +50,14 @@ if (await exists(saveDirectory + 'knownCharacters.json', { dir: BaseDirectory.Ap
 	knownCharactersInitial = new KnownCharacters(JSON.parse(json));
 }
 export const knownCharacters = writable(knownCharactersInitial);
+canSave.knownCharacters = true;
 
 
 // Saving
 export async function save(saveData: Stringifyable, saveName: string): Promise<void> {
-	await writeTextFile({ path: saveDirectory + saveName + '.json', contents: saveData.getStringifiedData() }, { dir: BaseDirectory.AppData });
+	if (canSave[saveName]) {
+		await writeTextFile({ path: saveDirectory + saveName + '.json', contents: saveData.getStringifiedData() }, { dir: BaseDirectory.AppData });
+	} else {
+		console.log('Cannot save ' + saveName);
+	}
 }

@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@foxglove/avl": "^1.0.0",
-    "@tauri-apps/api": "^1.2.0"
+    "@tauri-apps/api": "^1.2.0",
+    "comlink": "^4.4.1"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^1.1.0",

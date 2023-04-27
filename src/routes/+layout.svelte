@@ -8,13 +8,21 @@
 	
 	import Navigation from '$lib/Navigation/Navigation.svelte';
 	import { save, readingHistory, knownWords, knownCharacters } from '$lib/data/AppSaveData';
-	import { publicationsInfo } from '$lib/data/Preload';
+	import { publicationsInfo, myDictionary, readHtml, updateReadHtml } from '$lib/data/Preload';
 	
+	
+	// save data on change
 	$: save($readingHistory, 'readingHistory');
 	$: save($knownWords, 'knownWords');
 	$: save($knownCharacters, 'knownCharacters');
 	
-	const unsubscribe = publicationsInfo.subscribe(value => {});
+	// persist preloaded data
+	const unsubscribe1 = publicationsInfo.subscribe(value => {});
+	const unsubscribe2 = myDictionary.subscribe(value => {});
+	const unsubscribe3 = readHtml.subscribe(value => {});
+	
+	// update $readHtml when $readingHistory changes
+	$: $readingHistory, updateReadHtml();
 	
 	function drawerOpen(): void {
 		drawerStore.open({});

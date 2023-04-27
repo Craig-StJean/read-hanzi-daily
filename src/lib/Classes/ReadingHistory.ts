@@ -10,20 +10,31 @@ export default class ReadingHistory {
 		this.history = arrayOfPublicationPaths;
 	}
 	
-	remove(publicationPath: string) {
+	remove(publicationPath: string): boolean {
+		const length = this.history.length;
 		this.history = this.history.filter(element => element !== publicationPath);
+		
+		return this.history.length !== length;
 	}
 	
-	add(publicationPath: string) {
+	add(publicationPath: string): boolean {
+		let previousPath = this.latestRead();
+		
 		this.remove(publicationPath);
 		this.history.unshift(publicationPath);
+		
+		return previousPath !== publicationPath;
 	}
 	
 	latestRead(): string {
-		return this.history[0];
+		if (this.history[0]) {
+			return this.history[0];
+		} else {
+			return '';
+		}
 	}
 	
-	at(index: number) {
+	at(index: number): string {
 		return this.history[index];
 	}
 	
@@ -32,6 +43,6 @@ export default class ReadingHistory {
 	}
 	
 	getStringifiedData(): string {
-		return JSON.stringify(this.history);
+		return JSON.stringify(this.history, null, 2);
 	}
 }

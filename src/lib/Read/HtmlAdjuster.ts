@@ -1,13 +1,11 @@
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 import { sep } from '@tauri-apps/api/path';
 
-import { MyDictionary, myDictionary, type DictionaryEntry } from '$lib/data/MyDictionary';
+import { get } from 'svelte/store';
 
-
-let dictionary: MyDictionary;
-$: myDictionary.subscribe(value => {
-	dictionary = value;
-});
+import type { DictionaryEntry } from '$lib/Classes/MyDictionary';
+import type MyDictionary from '$lib/Classes/MyDictionary';
+import { myDictionary } from '$lib/data/Preload';
 
 
 export default class HtmlAdjuster {
@@ -107,6 +105,7 @@ export default class HtmlAdjuster {
 	}
 	#addRubyToChineseText(chineseText: string): string {
 		let rubyText = '';
+		const dictionary: MyDictionary = get(myDictionary);
 		
 		while (chineseText.length > 0) {
 			let index = Math.min(4, chineseText.length);

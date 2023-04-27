@@ -9,8 +9,10 @@
 	export let data: PageData;
 	
 	async function click(fileName: string) {
-		$readingHistory.add(data.relativeDirectory + fileName);
-		$readingHistory = $readingHistory;
+		const added = $readingHistory.add(data.relativeDirectory + fileName);
+		if (added) {
+			$readingHistory = $readingHistory;
+		}
 		goto(`/read`);
 	}
   </script>

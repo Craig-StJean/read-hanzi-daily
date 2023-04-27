@@ -54,6 +54,6 @@ export default class KnownWords {
 	}
 	
 	getStringifiedData(): string {
-		return JSON.stringify(this.knownWords);
+		return JSON.stringify(this.knownWords, null, 2);
 	}
 }
