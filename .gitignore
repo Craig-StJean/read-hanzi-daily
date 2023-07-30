@@ -29,3 +29,7 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Mine
+extra/UpdateDictionary/old
+src/lib/data/dictionary_old

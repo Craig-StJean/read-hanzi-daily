@@ -1,7 +1,8 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 
 import MyFiles, { type PublicationInfo } from '$lib/Classes/MyFiles';
 import MyDictionary from '$lib/Classes/MyDictionary';
+import { userDictionary } from "$lib/data/AppSaveData";
 import { readHtmlText } from '$lib/Read/LoadReadMaterial';
 
 
@@ -17,7 +18,7 @@ updatePublicationsInfo();
 const dictionary = new MyDictionary();
 export const myDictionary = writable(dictionary);
 async function loadDictionary() {
-	dictionary.initiate();
+	await dictionary.initiateType('master');
 }
 loadDictionary();
 

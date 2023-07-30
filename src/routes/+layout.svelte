@@ -4,10 +4,14 @@
 	import "../app.postcss";
 	
 	import { AppShell, AppBar, LightSwitch, Drawer, drawerStore, type DrawerSettings } from '@skeletonlabs/skeleton';
-	import { Toast } from '@skeletonlabs/skeleton';
+	import { Toast, toastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import { Modal, modalStore } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
+	import WordModal from '$lib/Read/WordModal.svelte';
 	
 	import Navigation from '$lib/Navigation/Navigation.svelte';
-	import { save, readingHistory, knownWords, knownCharacters } from '$lib/data/AppSaveData';
+	import { save, readingHistory, knownWords, knownCharacters, userDictionary } from '$lib/data/AppSaveData';
 	import { publicationsInfo, myDictionary, readHtml, updateReadHtml } from '$lib/data/Preload';
 	
 	
@@ -15,6 +19,7 @@
 	$: save($readingHistory, 'readingHistory');
 	$: save($knownWords, 'knownWords');
 	$: save($knownCharacters, 'knownCharacters');
+	$: save($userDictionary, 'userDictionary');
 	
 	// persist preloaded data
 	const unsubscribe1 = publicationsInfo.subscribe(value => {});
@@ -23,6 +28,43 @@
 	
 	// update $readHtml when $readingHistory changes
 	$: $readingHistory, updateReadHtml();
+	
+	// show toasts when you learn new things 😄
+	let wordCount = 0;
+	$: {
+		const newWordCount = $knownWords.getAllWords().length;
+		if (newWordCount > wordCount) {
+			const t: ToastSettings = {
+				message: `You know ${$knownWords.getAllWords().length} words 🥳🎉`,
+				timeout: 3000,
+				background: 'variant-filled-secondary',
+			};
+			toastStore.trigger(t);
+		}
+		wordCount = newWordCount;
+	}
+	let characterCount = 0;
+	$: {
+		const newCharacterCount = $knownCharacters.getAllCharacters().length;
+		if (newCharacterCount > characterCount) {
+			const t: ToastSettings = {
+				message: `You know ${$knownCharacters.getAllCharacters().length} characters 🥳🎉`,
+				timeout: 3000,
+				background: 'variant-filled-tertiary',
+			};
+			toastStore.trigger(t);
+		}
+		characterCount = newCharacterCount;
+	}
+	
+	// word modal stuff
+	const modalComponentRegistry: Record<string, ModalComponent> = {
+		wordComponent: {
+			ref: WordModal,
+			props: {},
+			slot: '',
+		}
+	};
 	
 	function drawerOpen(): void {
 		drawerStore.open({});
@@ -34,6 +76,7 @@
 </script>
 
 <Toast />
+<Modal components={modalComponentRegistry} />
 
 <Drawer class='w-[70px] justify-center overflow-x-hidden'>
 	<div class='flex h-max justify-center overflow-x-hidden' on:click={drawerClose}>

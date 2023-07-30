@@ -1,3 +1,7 @@
+import { sep } from '@tauri-apps/api/path';
+
+export const SAVE_DIRECTORY = 'save' + sep;
+
 export const MONTH_NAMES: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export type PublicationCode = {
