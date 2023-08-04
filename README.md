@@ -1,5 +1,5 @@
-# auto-subtitle-gui
-Automatically generate and overlay subtitles for any video.
+# Read Hanzi Daily
+Display pinyin and english definitions over characters and hide them as you learn.
 
 ## Dev
 ### Recommended IDE Setup
