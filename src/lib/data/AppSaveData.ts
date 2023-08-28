@@ -73,3 +73,5 @@ export async function save(saveData: Stringifyable, saveName: string): Promise<v
 		console.log('Cannot save ' + saveName);
 	}
 }
+
+console.log('appsavedata')

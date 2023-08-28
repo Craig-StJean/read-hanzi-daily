@@ -1,4 +1,5 @@
-<script>import { getContext } from "svelte";
+<script>
+	import { getContext } from "svelte";
 	export let group;
 	export let name;
 	export let value;

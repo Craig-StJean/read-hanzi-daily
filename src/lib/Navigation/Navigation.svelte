@@ -14,6 +14,7 @@
 		library: '/library',
 		read: '/read',
 	};
+	console.log('navigation')
 </script>
 
 <AppRail selected={storeValue}>

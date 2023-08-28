@@ -39,28 +39,8 @@
         "all": false,
         "open": true,
 		"execute": true,
-		"sidecar": true,
+		"sidecar": false,
 		"scope": [
-			{ 
-				"name": "deno-binaries/jwDownloader",
-				"sidecar": true,
-				"args": [
-					"publication",
-					"issue",
-					"language",
-					"fileFormat",
-					"destinationWithFileName"
-				]
-			},
-			{ 
-				"name": "deno-binaries/unzipEpub",
-				"sidecar": true,
-				"args": [
-					{
-						"validator": "\\S+"
-					}
-				]
-			},
 			{
 				"name": "tar",
 				"cmd": "tar",
@@ -85,10 +65,7 @@
       "deb": {
         "depends": []
       },
-      "externalBin": [
-		"deno-binaries/jwDownloader",
-		"deno-binaries/unzipEpub"
-	  ],
+      "externalBin": [],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",

@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let parent: any;
+	//export let parent: any;
 	
 	import { modalStore } from '@skeletonlabs/skeleton';
 	

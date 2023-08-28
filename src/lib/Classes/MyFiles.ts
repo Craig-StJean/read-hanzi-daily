@@ -1,4 +1,4 @@
-import { readDir, BaseDirectory, type FileEntry } from '@tauri-apps/api/fs';
+import { exists, createDir, readDir, BaseDirectory, type FileEntry } from '@tauri-apps/api/fs';
 import { sep } from '@tauri-apps/api/path';
 
 export type PublicationInfo = {
@@ -13,7 +13,6 @@ export default class MyFiles {
 	
 	// relative path for app e.g. epubs/OEBPS
 	static async getFileList(relativePath: string): Promise<string[]> {
-		
 		let files: string[] = [];
 		
 		const entries: FileEntry[] = await readDir(relativePath, { dir: BaseDirectory.AppData });

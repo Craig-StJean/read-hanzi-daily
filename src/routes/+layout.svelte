@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Nothing from '$lib/CreateFoldersAndFiles';
+	
 	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 	import '@skeletonlabs/skeleton/styles/all.css';
 	import "../app.postcss";
@@ -14,7 +16,7 @@
 	import { save, readingHistory, knownWords, knownCharacters, userDictionary } from '$lib/data/AppSaveData';
 	import { publicationsInfo, myDictionary, readHtml, updateReadHtml } from '$lib/data/Preload';
 	
-	
+	console.log('layout')
 	// save data on change
 	$: save($readingHistory, 'readingHistory');
 	$: save($knownWords, 'knownWords');

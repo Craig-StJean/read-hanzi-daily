@@ -32,3 +32,5 @@ export async function updateReadHtml() {
 	readHtmlLoading.set(false);
 }
 updateReadHtml();
+
+console.log('preload')
